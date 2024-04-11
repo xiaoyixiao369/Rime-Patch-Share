@@ -1,0 +1,20 @@
+name: 同步雾凇仓库代码
+on:
+  schedule:
+    - cron:  '39 6 * * *'
+  workflow_dispatch:
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge upstream for rime_ice
+        run: |
+          git config --global user.name '{username}'
+          git config --global user.email '{username@qq.com.com}'
+          git config --global credential.helper store
+          git clone https://{toekn}@github.com/{username}/Rime.git Rime
+          cd Rime
+          git remote add upstream https://github.com/iDvel/rime-ice.git
+          git fetch upstream
+          git merge upstream/main
+          git push origin main          

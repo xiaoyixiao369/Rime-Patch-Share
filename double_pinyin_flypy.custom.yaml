@@ -1,0 +1,503 @@
+# 小鹤双拼补丁配置
+# rime高级手册 https://github.com/rime/home/wiki/RimeWithSchemata
+patch:
+  # 菜单
+  menu:
+    page_size: 7  # 候选词个数
+    # alternative_select_labels: [ ①, ②, ③, ④, ⑤, ⑥, ⑦, ⑧, ⑨, ⑩ ]  # 修改候选项标签
+    # alternative_select_keys: ASDFGHJKL  # 如编码字符占用数字键，则需另设选字键
+
+  # 处理器
+  engine/processors/:
+    - lua_processor@*transform_jianpin        # 一键展开为超级简拼处理器。注意，需要增加在第1个位置
+    - lua_processor@select_character          # 以词定字
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+
+  # 过滤器
+  engine/filters/+:
+    - lua_filter@*aux_code@flypy_full # 开启辅助码筛选插件
+
+  # 按键
+  key_binder/+:
+    aux_code_trigger: "/"  # 辅助码筛选的触发键
+    show_aux_notice: true  # 是否显示辅助码筛选字母提示
+
+  # 可上屏的字符
+  speller/alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA/ # 除了字母以外，增加辅助码筛选的触发键(aux_code_trigger配置的按键)上屏
+  
+  # 超级简拼
+  speller/algebra/+:
+    - abbrev/^(.).+$/$1/  # 首字母简拼，开启后会导致 3 个字母时 kj'x 变成 k'jx 的问题
+
+  # 快捷键
+  key_binder/bindings/+:
+    - { when: has_menu, accept: semicolon, send: 2 }  # 分号键选第二个候选上屏
+    # - { when: has_menu, accept: apostrophe, send: 3 } # 引号键选第三个候选上屏。这里注释掉，保留给简拼分隔符使用
+    - { when: paging, accept: comma, send: Page_Up } # 上一页
+    - { when: has_menu, accept: period, send: Page_Down } # 下一页
+
+  # 上屏的编码
+  translator/preedit_format: [] # 配置为空表示编辑栏中的编码不显示全拼，而是以小鹤的编码出现
+
+  # Lua 配置: 降低部分英语单词在候选项的位置。
+  # 详细介绍 https://dvel.me/posts/make-rime-en-better/#短单词置顶的问题
+  # 正常情况： 输入 rug 得到 「1.rug 2.如果 …… 」
+  # 降低之后： 输入 rug 得到 「1.如果 2.rug …… 」
+  # 几种模式：
+  # all     降低脚本内置的单词（所有 3~4 位长度、前 2~3 位是完整拼音、最后一位是声母），words 作为自定义的额外补充
+  # custom  完全自定义，只降低 words 里的
+  # none    不降低任何单词，相当于没有启用这个 Lua
+  # （匹配的是编码，不是单词）
+  reduce_english_filter/mode: custom
+  reduce_english_filter/idx: 3
+  reduce_english_filter/words/+: [
+    hey,key,my,dry,cn,up
+  ]
+
+  pin_cand_filter:
+  # 格式：编码<Tab>字词1<Space>字词2……
+    - a	啊 按
+    - aa	啊 阿
+    - ah	昂 肮
+    - ai	爱 唉
+    - an	安 按
+    - ao	奥 嗷
+    - b	不 吧
+    - ba	把 吧
+    - bb	滨 斌
+    - bc	报 包
+    - bd	白 百
+    - bf	本 笨
+    - bg	蹦 甭
+    - bh	帮 棒
+    - bi	比 必
+    - bj	办 班
+    - bk	并 病
+    - bm	边 变
+    - bn	表 标
+    - bo	波 博
+    - bp	别 憋
+    - bu	不 步
+    - bw	被 倍
+    - c	才 寸
+    - ca	擦 嚓
+    - cc	草 曹
+    - cd	才 菜
+    - ce	测 册
+    - cf	岑 涔
+    - cg	曾 层
+    - ch	藏 苍
+    - ci	次 此
+    - cj	参 残
+    - co	错 措
+    - cr	窜 蹿
+    - cs	从 匆
+    - cu	粗 促
+    - cv	催 翠
+    - cy	存 村
+    - cz	凑 辏
+    - d	的 地 得
+    - da	大 打
+    - dc	到 倒
+    - dd	带 代
+    - de	的 得
+    - df	扽 扥 㩐
+    - dg	等 灯
+    - dh	当 党
+    - di	地 弟
+    - dj	但 单
+    - dk	定 顶
+    - dm	点 电
+    - dn	掉 调
+    - do	多 朵
+    - dp	跌 爹
+    - dq	丢 铥
+    - dr	段 短
+    - ds	动 东
+    - du	读 度
+    - dv	对 队
+    - dw	得 嘚
+    - dx	嗲
+    - dy	顿 吨
+    - dz	都 斗
+    - e	二 而
+    - ee	饿 恶
+    - eg	鞥
+    - ei	诶 欸
+    - en	嗯 恩
+    - er	二 而
+    - f	非 份
+    - fa	发 法
+    - ff	分 份
+    - fg	风 疯
+    - fh	放 方
+    - fj	反 凡
+    - fn	覅
+    - fo	佛
+    - fu	福 父
+    - fw	非 飞
+    - fz	否 缶
+    - g	个 哥 歌 格
+    - ga	嘎 噶
+    - gc	高 告
+    - gd	该 改
+    - ge	个 各
+    - gf	跟 根
+    - gg	更 梗
+    - gh	刚 港
+    - gj	干 感
+    - gk	乖 怪
+    - gl	光 广
+    - go	过 国
+    - gr	管 关
+    - gs	共 公
+    - gu	故 古
+    - gv	贵 归
+    - gw	给 給
+    - gx	挂 瓜
+    - gy	滚 棍
+    - gz	够 狗
+    - h	好 和
+    - ha	哈 蛤
+    - hc	好 号
+    - hd	还 海
+    - he	和 何
+    - hf	很 恨
+    - hg	横 哼
+    - hh	行 航
+    - hj	含 汉
+    - hk	坏 怀
+    - hl	黄 皇
+    - ho	或 活
+    - hr	换 还
+    - hs	红 洪
+    - hu	户 乎
+    - hv	会 回
+    - hw	黑 嘿
+    - hx	话 花
+    - hy	混 婚
+    - hz	后 厚
+    - i	吃 持
+    - ia	差 查
+    - ic	超 吵
+    - id	拆 柴
+    - ie	车 扯
+    - if	陈 沉
+    - ig	成 程
+    - ih	长 场
+    - ii	吃 持
+    - ij	产 缠
+    - ik	揣 踹
+    - il	创 床
+    - io	戳 绰
+    - ir	传 穿
+    - is	冲 充
+    - iu	出 处
+    - iv	吹 垂
+    - ix	欻 歘
+    - iy	春 纯
+    - iz	抽 臭
+    - j	就 件
+    - jb	仅 近
+    - ji	几 及
+    - jk	经 精
+    - jl	将 江
+    - jm	见 件
+    - jn	叫 交
+    - jp	接 姐
+    - jq	就 酒
+    - jr	卷 捐
+    - js	窘 炅
+    - jt	绝 决
+    - ju	据 具
+    - jx	家 加
+    - jy	均 军
+    - k	可 块
+    - ka	卡 咖
+    - kc	靠 考
+    - kd	开 凯
+    - ke	可 克
+    - kf	肯 啃
+    - kg	坑 吭
+    - kh	康 抗
+    - kj	看 砍
+    - kk	快 块
+    - kl	况 狂
+    - ko	扩 阔
+    - kr	宽 款
+    - ks	空 控
+    - ku	哭 酷
+    - kv	亏 盔
+    - kw	剋 尅
+    - kx	夸 跨
+    - ky	困 昆
+    - kz	口 扣
+    - l	了 楼
+    - la	拉 啦
+    - lb	林 临
+    - lc	老 劳
+    - ld	来 莱
+    - le	了 乐
+    - lg	冷 愣
+    - lh	浪 狼
+    - li	力 里
+    - lj	蓝 兰
+    - lk	另 令
+    - ll	两 量
+    - lm	连 脸
+    - ln	料 聊
+    - lo	落 罗
+    - lp	列 烈
+    - lq	流 留
+    - lr	乱 卵
+    - ls	龙 隆
+    - lt	略 掠
+    - lu	路 录
+    - lv	绿 律
+    - lw	类 累
+    - lx	俩
+    - ly	论 轮
+    - lz	楼 漏
+    - m	没 嘛 呣 呒
+    - ma	吗 妈
+    - mb	民 敏
+    - mc	毛 猫
+    - md	买 卖
+    - me	么
+    - mf	门 们
+    - mg	梦 猛
+    - mh	忙 芒
+    - mi	米 密
+    - mj	慢 满
+    - mk	明 名
+    - mm	面 免
+    - mn	妙 秒
+    - mo	魔 末
+    - mp	灭 蔑
+    - mq	谬 缪
+    - mu	目 母
+    - mw	没 每
+    - mz	某 谋
+    - n	你 哪 年
+    - na	那 哪
+    - nb	您 恁
+    - nc	脑 闹
+    - nd	奶 乃
+    - ne	呢 呐
+    - nf	嫩 恁
+    - ng	能
+    - nh	囊 囔
+    - ni	你 泥
+    - nj	难 男
+    - nk	宁 凝
+    - nl	娘 酿
+    - nm	年 念
+    - nn	鸟 尿
+    - no	诺 挪
+    - np	捏 聂
+    - nq	牛 扭
+    - nr	暖
+    - ns	弄 浓
+    - nt	虐 疟
+    - nu	怒 努
+    - nv	女 钕
+    - nw	内 那
+    - nz	耨
+    - o	哦
+    - oo	哦 喔
+    - ou	偶 欧
+    - p	平 凭
+    - pa	怕 爬
+    - pb	品 拼
+    - pc	跑 泡
+    - pd	排 派
+    - pf	盆 喷
+    - pg	碰 朋
+    - ph	旁 胖
+    - pi	皮 批
+    - pj	盘 判
+    - pk	凭 平
+    - pm	片 篇
+    - pn	票 漂
+    - po	破 婆
+    - pp	撇 瞥
+    - pu	普 扑
+    - pw	配 陪
+    - pz	剖 抔
+    - q	去 却
+    - qb	亲 秦
+    - qi	起 其
+    - qk	请 情
+    - ql	强 枪
+    - qm	前 钱
+    - qn	桥 巧
+    - qp	且 切
+    - qq	求 球
+    - qr	全 权
+    - qs	穷 琼
+    - qt	却 缺
+    - qu	去 取
+    - qx	恰 掐
+    - qy	群 裙
+    - r	人 如
+    - rc	绕 扰
+    - re	热 惹
+    - rf	人 任
+    - rg	仍 扔
+    - rh	让 嚷
+    - ri	日 驲
+    - rj	然 染
+    - ro	若 弱
+    - rr	软 阮
+    - rs	容 荣
+    - ru	如 入
+    - rv	瑞 锐
+    - rx	挼
+    - ry	润 闰
+    - rz	肉 柔
+    - s	三 岁
+    - sa	撒 洒
+    - sc	扫 骚
+    - sd	赛 塞
+    - se	色 涩
+    - sf	森
+    - sg	僧
+    - sh	桑 丧
+    - si	四 死
+    - sj	三 伞
+    - so	所 索
+    - sr	算 酸
+    - ss	送 松
+    - su	苏 速
+    - sv	虽 岁
+    - sy	孙 损
+    - sz	搜 艘
+    - t	他 她 它
+    - ta	他 她 它
+    - tc	逃 套
+    - td	太 台
+    - te	特 忑
+    - tg	疼 腾
+    - th	汤 烫
+    - ti	体 提
+    - tj	谈 探
+    - tk	听 停
+    - tm	天 甜
+    - tn	条 调
+    - to	托 脱
+    - tp	铁 贴
+    - tr	团 湍
+    - ts	同 通
+    - tu	图 土
+    - tv	推 退
+    - tw	忒
+    - ty	吞 屯
+    - tz	头 投
+    - u	是 事 十 室
+    - ua	啥 傻
+    - uc	少 烧
+    - ud	晒 筛
+    - ue	设 射
+    - uf	深 神
+    - ug	生 胜
+    - uh	上 伤
+    - ui	是 事
+    - uj	山 善
+    - uk	帅 摔
+    - ul	双 爽
+    - uo	说 硕
+    - ur	栓 拴
+    - uu	数 书
+    - uv	水 睡
+    - uw	谁
+    - ux	耍 刷
+    - uy	顺 瞬
+    - uz	手 受
+    - v	这 之
+    - va	扎 炸
+    - vc	找 照
+    - vd	摘 窄
+    - ve	这 着
+    - vf	真 阵
+    - vg	正 整
+    - vh	长 张
+    - vi	只 支
+    - vj	占 战
+    - vk	拽 跩
+    - vl	装 状
+    - vo	桌 捉
+    - vr	转 专
+    - vs	中 种
+    - vu	注 助
+    - vv	追 坠
+    - vw	这
+    - vx	抓 爪
+    - vy	准 谆
+    - vz	周 轴
+    - w	我 唯
+    - wa	娃 挖
+    - wd	外 歪
+    - wf	问 文
+    - wg	翁 瓮
+    - wh	王 望
+    - wj	完 万
+    - wo	我 握
+    - wu	无 五
+    - ww	为 位
+    - x	小 项
+    - xb	新 心
+    - xi	系 西
+    - xk	行 型
+    - xl	想 像
+    - xm	先 现
+    - xn	小 笑
+    - xp	写 些
+    - xq	修 秀
+    - xr	选 宣
+    - xs	熊 胸
+    - xt	学 雪
+    - xu	需 须
+    - xx	下 夏
+    - xy	寻 询
+    - y	一 由
+    - ya	呀 亚
+    - yb	因 引
+    - yc	要 药
+    - ye	也 页
+    - yh	样 羊
+    - yi	一 以
+    - yj	眼 演
+    - yk	应 影
+    - yo	哟 唷
+    - yr	元 原
+    - ys	用 永
+    - yt	月 约
+    - yu	与 于
+    - yy	云 晕
+    - yz	有 又
+    - z	在 再
+    - za	咋 杂
+    - zc	早 造
+    - zd	在 再
+    - ze	则 责
+    - zf	怎 谮
+    - zg	增 曾
+    - zh	藏 脏
+    - zi	自 字
+    - zj	咱 赞
+    - zo	做 作
+    - zr	钻 攥
+    - zs	总 宗
+    - zu	组 足
+    - zv	最 嘴
+    - zw	贼 鲗
+    - zy	尊 遵
+    - zz	走 奏
+

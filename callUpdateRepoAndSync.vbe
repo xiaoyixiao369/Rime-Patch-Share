@@ -1,0 +1,3 @@
+' 使用vbe调用bat，以免执行bat时出现命令行窗口
+set ws=wscript.createobject("wscript.shell")  
+ws.run "%USERPROFILE%\AppData\Roaming\Rime\updateRepoAndSync.bat /start",0
