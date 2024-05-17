@@ -42,6 +42,8 @@ patch:
     # - { when: has_menu, accept: apostrophe, send: 3 } # 引号键选第三个候选上屏。这里注释掉，保留给简拼分隔符使用
     - { when: paging, accept: comma, send: Page_Up } # 上一页
     - { when: has_menu, accept: period, send: Page_Down } # 下一页
+    - { when: always, accept: Control+Shift+E, toggle: emoji } # 切换emoji
+    - { when: has_menu, accept: Tab, send: slash } # 进入辅助码筛选模式，注意，send的值要与key_binder/aux_code_trigger一样
 
   # 上屏的编码
   translator/preedit_format: [] # 配置为空表示编辑栏中的编码不显示全拼，而是以小鹤的编码出现
