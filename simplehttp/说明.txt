@@ -1,0 +1,4 @@
+手动将simplehttp.dll文件拷贝到小狼毫的安装目录，注意：是安装目录，不是用户目录。
+注意：目前已经在rime.lua中实现了自动拷贝。当重新部署时就会自动拷贝。
+
+文件网络获取地址：https://github.com/hchunhui/librime-cloud
