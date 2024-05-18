@@ -151,11 +151,6 @@ local function copy_file_by_lua(sourceFilePath, destinationFilePath)
 
 end
 
--- 获取当前文件所在目录
-local function get_current_file_dir() 
-    return string.sub(debug.getinfo(1).source, 2, string.len("/rime.lua") * -1)
-end
-
 -- 获取Rime程序安装目录中data目录路径
 local shared_data_dir = rime_api.get_shared_data_dir()
 -- 计算Rime的程序安装路径，并将路径中的\替换成/，以兼容Linux
