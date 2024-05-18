@@ -1,0 +1,22 @@
+https://github.com/mirtlecn/rime-radical-pinyin?tab=readme-ov-file#%E5%8F%8D%E6%9F%A5%E5%B8%A6%E5%A3%B0%E8%B0%83%E6%B3%A8%E9%9F%B3
+
+反查带声调注音
+本项目提供了三个编译好的带声调的词典可供取用，来源于 pinyin-data 项目。
+
+plum 安装:
+
+bash rime-install mirtlecn/rime-radical-pinyin:extra
+若要手动安装，请前往 Release 界面下载 extra.zip，解压后，在其中的 build 文件夹内有以下三个文件：
+
+zdict.reverse.bin：汉典注音，无音者注 n/a（推荐）
+kMandarin.reverse.bin: 单字注最常用的一到两个读音（推荐）
+pinyin.reverse.bin: 单字注所有可能的读音（会包含异体字、通假字等音）
+下载复制进 build 目录后。更改提示码词典指向它们，如下图所示：
+
+radical_reverse_lookup:
+    dictionary: zdict # 提示码词表
+    # dictionary: kMandarin
+    # dictionary: pinyin
+
+
+本目录中的反查词典编译文件会在输入法部署（或重新部署）时会被rime.lua文件中的脚本自动拷贝到build目录
