@@ -156,29 +156,30 @@ local function get_current_file_dir()
     return string.sub(debug.getinfo(1).source, 2, string.len("/rime.lua") * -1)
 end
 
--- 获取小狼毫程序安装目录中data目录路径
+-- 获取Rime程序安装目录中data目录路径
 local shared_data_dir = rime_api.get_shared_data_dir()
--- 计算小狼毫的程序安装路径，并将路径中的\替换成/，以兼容Linux
-local weasel_install_path = string.gsub(shared_data_dir, '\\', '/'):gsub("/data$", "")
---log.writeLog('weasel_install_path:'..weasel_install_path)
+-- 计算Rime的程序安装路径，并将路径中的\替换成/，以兼容Linux
+local rime_install_path = string.gsub(shared_data_dir, '\\', '/'):gsub("/data$", "")
+--log.writeLog('rime_install_path:'..rime_install_path)
 
 -- 获取用户文件路径，并将路径中的\替换成/，以兼容Linux
-local weasel_user_path=string.gsub(rime_api.get_user_data_dir(), '\\', '/')
---log.writeLog('weasel_user_path:'..weasel_user_path)
--- 拷贝simplehttp.dll文件到安装目录
-copy_file_by_lua(weasel_user_path..'/simplehttp/simplehttp.dll', weasel_install_path..'/simplehttp.dll')      
+local rime_user_path=string.gsub(rime_api.get_user_data_dir(), '\\', '/')
+--log.writeLog('rime_user_path:'..rime_user_path)
+-- 拷贝simplehttp.dll，simplehttp.so文件到Rime安装目录
+copy_file_by_lua(rime_user_path..'/simplehttp/simplehttp.dll', rime_install_path..'/simplehttp.dll')
+copy_file_by_lua(rime_user_path..'/simplehttp/simplehttp.so', rime_install_path..'/simplehttp.so')
 
 -- 拷贝拼音音音调文件
-copy_file_by_lua(weasel_user_path..'/pinyin_tone/zdict.reverse.bin', weasel_user_path..'/build/zdict.reverse.bin')
-copy_file_by_lua(weasel_user_path..'/pinyin_tone/kMandarin.reverse.bin', weasel_user_path..'/build/kMandarin.reverse.bin')
-copy_file_by_lua(weasel_user_path..'/pinyin_tone/pinyin.reverse.bin', weasel_user_path..'/build/pinyin.reverse.bin')
-copy_file_by_lua(weasel_user_path..'/pinyin_tone/tone.reverse.bin', weasel_user_path..'/build/tone.reverse.bin')
+copy_file_by_lua(rime_user_path..'/pinyin_tone/zdict.reverse.bin', rime_user_path..'/build/zdict.reverse.bin')
+copy_file_by_lua(rime_user_path..'/pinyin_tone/kMandarin.reverse.bin', rime_user_path..'/build/kMandarin.reverse.bin')
+copy_file_by_lua(rime_user_path..'/pinyin_tone/pinyin.reverse.bin', rime_user_path..'/build/pinyin.reverse.bin')
+copy_file_by_lua(rime_user_path..'/pinyin_tone/tone.reverse.bin', rime_user_path..'/build/tone.reverse.bin')
 
 
---- 自动替换updateRepoAndSync.bat中的小狼毫程序安装目录、用户目录
+--- 自动替换updateRepoAndSync.bat中的Rime程序安装目录、用户目录
 -- updateRepoAndSync.bat文件路径
-local updateRepoAndSyncBatTemplatePath = weasel_user_path..'/updateRepoAndSync.template.bat'
-local updateRepoAndSyncBatPath = weasel_user_path..'/updateRepoAndSync.bat'
+local updateRepoAndSyncBatTemplatePath = rime_user_path..'/updateRepoAndSync.template.bat'
+local updateRepoAndSyncBatPath = rime_user_path..'/updateRepoAndSync.bat'
 -- 读取文件内容
 local updateRepoAndSyncBatTemplatePathData = ""
 local templateFile = io.open(updateRepoAndSyncBatTemplatePath, "r")
@@ -191,8 +192,8 @@ else
 end
 
 -- 使用gsub函数替换内容
-local updateRepoAndSyncBatPathData = string.gsub(updateRepoAndSyncBatTemplatePathData, "{user_path}", weasel_user_path)
-updateRepoAndSyncBatPathData = string.gsub(updateRepoAndSyncBatPathData, "{install_path}", weasel_install_path)
+local updateRepoAndSyncBatPathData = string.gsub(updateRepoAndSyncBatTemplatePathData, "{user_path}", rime_user_path)
+updateRepoAndSyncBatPathData = string.gsub(updateRepoAndSyncBatPathData, "{install_path}", rime_install_path)
 -- 将替换后的内容写入新文件
 local updateRepoAndSyncBatPathFile = io.open(updateRepoAndSyncBatPath, "w")
 if updateRepoAndSyncBatPathFile then
@@ -209,6 +210,6 @@ end
 --  使用方法：
 --  将 "lua_translator@baidu_translator" 和 "lua_processor@baidu_processor"
 --  分别加到输入方案的 engine/translators 和 engine/processors 中
-local baidu = require("trigger")("Control+8", require("baidu"))
+local baidu = require("trigger")("0", require("baidu"))
 baidu_translator = baidu.translator
 baidu_processor = baidu.processor
