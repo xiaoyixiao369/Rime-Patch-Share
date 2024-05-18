@@ -116,8 +116,6 @@ end
 
 ------------------------------------------------
 
---- 计算器插件, 使用=触发
-calculator_translator = require("calculator_translator")
 --  导入log模块记录日志
 --local logEnable, log = pcall(require, "runLog")
 -- 复制文件函数
