@@ -123,14 +123,14 @@ local function copy_file_by_lua(sourceFilePath, destinationFilePath)
     -- 打开源文件
     local sourceFile = assert(io.open(sourceFilePath, "rb"))
     if not sourceFile then
-        log.writeLog("无法打开源文件: " .. sourceFile)
+        --log.writeLog("无法打开源文件: " .. sourceFile)
         return
     end
 
     -- 创建或覆盖目标文件
     local destinationFile = assert(io.open(destinationFilePath, "wb"))
     if not destinationFile then
-        log.writeLog("无法创建目标文件: " .. destinationFilePath)
+        --log.writeLog("无法创建目标文件: " .. destinationFilePath)
         sourceFile:close()
         return
     end
@@ -179,9 +179,6 @@ local templateFile = io.open(updateRepoAndSyncBatTemplatePath, "r")
 if templateFile then
     updateRepoAndSyncBatTemplatePathData = templateFile:read("*a") -- 读取整个文件
     templateFile:close()
-else
-    print("无法打开文件:", templateFile)
-    return
 end
 
 -- 使用gsub函数替换内容
@@ -192,14 +189,13 @@ local updateRepoAndSyncBatPathFile = io.open(updateRepoAndSyncBatPath, "w")
 if updateRepoAndSyncBatPathFile then
     updateRepoAndSyncBatPathFile:write(updateRepoAndSyncBatPathData)
     updateRepoAndSyncBatPathFile:close()
-    print("替换内容已写入新文件:", updateRepoAndSyncBatPath)
+    --log.writeLog("替换内容已写入新文件:"..updateRepoAndSyncBatPath)
 else
-    print("无法写入新文件:", updateRepoAndSyncBatPath)
+    --log.writeLog("无法写入新文件:"..updateRepoAndSyncBatPath)
 end
+--- 自动替换updateRepoAndSync.bat中的Rime程序安装目录、用户目录 结束
 
-
-
---- 百度云拼音插件，Control+8 为云输入触发键。注意：这个配置一定要放到最后，放到最后，放到最后。
+--- 百度云拼音插件，0 为云输入触发键。注意：这个配置一定要放到最后，放到最后，放到最后。
 --  使用方法：
 --  将 "lua_translator@baidu_translator" 和 "lua_processor@baidu_processor"
 --  分别加到输入方案的 engine/translators 和 engine/processors 中
