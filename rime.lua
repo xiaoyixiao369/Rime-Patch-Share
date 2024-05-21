@@ -162,7 +162,7 @@ local rime_user_path=string.gsub(rime_api.get_user_data_dir(), '\\', '/')
 copy_file_by_lua(rime_user_path..'/simplehttp/simplehttp.dll', rime_install_path..'/simplehttp.dll')
 copy_file_by_lua(rime_user_path..'/simplehttp/simplehttp.so', rime_install_path..'/simplehttp.so')
 
--- 拷贝拼音音音调文件
+-- 拷贝拼音音调文件
 copy_file_by_lua(rime_user_path..'/pinyin_tone/zdict.reverse.bin', rime_user_path..'/build/zdict.reverse.bin')
 copy_file_by_lua(rime_user_path..'/pinyin_tone/kMandarin.reverse.bin', rime_user_path..'/build/kMandarin.reverse.bin')
 copy_file_by_lua(rime_user_path..'/pinyin_tone/pinyin.reverse.bin', rime_user_path..'/build/pinyin.reverse.bin')
@@ -194,6 +194,16 @@ else
     --log.writeLog("无法写入新文件:"..updateRepoAndSyncBatPath)
 end
 --- 自动替换updateRepoAndSync.bat中的Rime程序安装目录、用户目录 结束
+
+--- 将程序目录写入文件中供其他脚本调用，如：清理词库的脚本
+local rimeInstallPath = rime_user_path..'/rimeInstallPath.txt'
+local rimeInstallPathPathFile = io.open(rimeInstallPath, "w")
+if updateRepoAndSyncBatPathFile then
+    rimeInstallPathPathFile:write(rime_install_path)
+    rimeInstallPathPathFile:close()
+end
+--- 将程序目录写入文件中供其他脚本调用，如：清理词库的脚本 结束
+
 
 --- 百度云拼音插件，0 为云输入触发键。注意：这个配置一定要放到最后，放到最后，放到最后。
 --  使用方法：
